@@ -5,40 +5,23 @@
 ## Example
 
 ```javascript
-var OpenAPIRequestValidator = require('openapi-request-validator').default;
-var requestValidator = new OpenAPIRequestValidator({
-  parameters: [
-    {
-      in: 'query',
-      type: 'string',
-      name: 'foo',
-      required: true
-    }
-  ],
-  requestBody: { // optional OpenApi v3 requestBodyObject
-    content: {
-      'application/json': {
-        schema: {
-          properties: {
-            name: {
-              type: 'string'
-            }
-          }
-        }
-      }
-    }
-  },
-  schemas: null, // an optional array or object of jsonschemas used to dereference $ref
-  errorTransformer: null, // an optional transformer function to format errors
-  customFormats: {
-    // support `"format": "foo"` for types.
-    foo: function(input) {
-      return input === 'foo';
-    }
-  }
-});
+// Part 1. Here's how you generate the code (use this in a build script)
 
-var request = {
+const generateOASValidationCode = require('openapi-request-validator-generator')
+
+// Note that the ./generatedCode directory will be deleted if anything exists there currently
+generateOASValidationCode('./path/to/oas.yaml', './generatedCode')
+
+
+// Part 2. Here's how you use the generated code at runtime
+
+// resource & method will be a specific resource and method from your OAS. The "oas" part comes from the filename of your OAS. If the spec file is named "yipee.yaml", and contains a resource GET /monkeys, then your generated filename would be "yipee_monkeys_get.js"
+
+// each endpoint in your OAS will have a unique validator that you will need to import, as it's validation is specific to that endpoint
+
+const validateRequest = require('./generatedCode/oas_resource_method.js') 
+
+const request = {
   headers: {
     'content-type': 'application/json'
   },
@@ -46,94 +29,6 @@ var request = {
   params: {},
   query: {foo: 'wow'}
 };
-var errors = requestValidator.validateRequest(request);
+const errors = validateRequest(request);
 console.log(errors); // => undefined
 ```
-
-## API
-
-### validate(args)
-#### args.parameters
-
-An array of openapi parameters.
-
-#### args.schemas
-
-If given as an array, each schema must have an `id` property.  See `./test/data-driven/`
-for tests with `schemas`.  Ids may be schema local (i.e. `#/definitions/SomeType`),
-or URL based (i.e. `/SomeType`).  When supplied, `$ref` usage will map exactly to the
-Id e.g. if `id` is `/SomeType`, `$ref` must be `/SomeType`.
-
-If given as an object, it will be assigned to `bodySchema.definitions`.  Schemas may then be dereferenced in parameters by using `#/definitions/<key in args.schemas object>`.
-
-#### args.version
-
-An optional string that currently does nothing.  This will ensure nothing breaks
-for new versions of openapi drafts that get added in the future.
-
-#### args.errorTransformer
-
-A function that transforms errors.
-
-This function is passed 2 arguments.
-
-```
-  errorTransformer: function(openapiError, ajvError) {
-    return {
-      message: openapiError.message
-    };
-  }
-```
-
-See the error format in [ajv](https://www.npmjs.com/package/ajv#validation-errors) for
-`ajvError`.  `openapiError`s have the following properties:
-
-* `errorCode` - A jsonschema error suffixed with `.openapi.requestValidation`.
-* `location` - One of `body`, `headers`, `path`, or `query`.  Signifies where validation
-failed.
-* `message` - A detailed message as to why validation failed.
-* `path` - The property of the location that failed validation.
-
-#### args.customFormats
-
-An object of formatters to use for the `format` keyword.
-
-See Custom Formats in [jsonschema](https://github.com/tdegrunt/jsonschema#custom-formats).
-
-## LICENSE
-```
-The MIT License (MIT)
-
-Copyright (c) 2018 Kogo Software LLC
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-```
-
-[downloads-image]: http://img.shields.io/npm/dm/openapi-request-validator.svg
-[npm-url]: https://npmjs.org/package/openapi-request-validator
-[npm-image]: http://img.shields.io/npm/v/openapi-request-validator.svg
-
-[travis-url]: https://travis-ci.org/kogosoftwarellc/open-api
-[travis-image]: https://api.travis-ci.org/kogosoftwarellc/open-api.svg?branch=master
-
-[coveralls-url]: https://coveralls.io/r/kogosoftwarellc/open-api
-[coveralls-image]: https://coveralls.io/repos/github/kogosoftwarellc/open-api/badge.svg?branch=master
-
-[gitter-url]: https://gitter.im/kogosoftwarellc/open-api
-[gitter-image]: https://badges.gitter.im/kogosoftwarellc/open-api.png
