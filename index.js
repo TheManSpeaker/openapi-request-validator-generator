@@ -9,13 +9,11 @@ const addFormats = require("ajv-formats");
 const {
   convertParametersToJSONSchema,
 } = require("openapi-jsonschema-parameters");
-const { dummyLogger } = require("ts-log");
-const contentTypeParser = require("content-type");
+const contentTypeParser = require("./content-type");
 
 const LOCAL_DEFINITION_REGEX = /^#\/([^\/]+)\/([^\/]+)$/;
 
 class OpenAPIRequestValidator {
-  logger = dummyLogger;
   loggingKey = "";
   requestBodyValidators = {};
   enableHeadersLowercase = true;
@@ -25,10 +23,6 @@ class OpenAPIRequestValidator {
     this.loggingKey = loggingKey;
     if (!args) {
       throw new Error(`${loggingKey}missing args argument`);
-    }
-
-    if (args.logger) {
-      this.logger = args.logger;
     }
 
     if (args.hasOwnProperty("enableHeadersLowercase")) {
@@ -172,8 +166,6 @@ class OpenAPIRequestValidator {
             // backwards compatibility with json-schema-draft-04
             delete schema.id;
             v.addSchema({ $id: id, ...schema }, id);
-          } else {
-            this.logger.warn(loggingKey, "igorning schema without id property");
           }
         });
       } else if (bodySchema) {
@@ -340,7 +332,6 @@ function validateRequest(request) {
     const mediaTypeMatch = getSchemaForMediaType(
       contentType,
       _validator.requestBody,
-      _validator.logger,
       _validator.loggingKey
     );
     if (!mediaTypeMatch) {
@@ -449,12 +440,7 @@ function extendedErrorMapper(mapper) {
   return (ajvError) => mapper(toOpenapiValidationError(ajvError), ajvError);
 }
 
-function getSchemaForMediaType(
-  contentTypeHeader,
-  requestBodySpec,
-  logger,
-  loggingKey
-) {
+function getSchemaForMediaType(contentTypeHeader, requestBodySpec, loggingKey) {
   if (!contentTypeHeader) {
     return;
   }
@@ -462,12 +448,6 @@ function getSchemaForMediaType(
   try {
     contentType = contentTypeParser.parse(contentTypeHeader).type;
   } catch (e) {
-    logger.warn(
-      loggingKey,
-      "failed to parse content-type",
-      contentTypeHeader,
-      e
-    );
     if (e instanceof TypeError && e.message === "invalid media type") {
       return;
     }
@@ -742,6 +722,16 @@ function generateOASValidationCode(oasPath, generatedCodePath) {
 
       const serializedValidator = serialize(validator, { unsafe: true });
 
+      const contentTypeParserCode = fs.readFileSync(
+        "./content-type.js",
+        "utf-8"
+      );
+      fs.writeFileSync(
+        `${dir}/content-type.js`,
+        contentTypeParserCode,
+        "utf-8"
+      );
+
       const helperFunctions = [
         getSchemaForMediaType,
         withAddedLocation,
@@ -751,7 +741,7 @@ function generateOASValidationCode(oasPath, generatedCodePath) {
       ];
 
       let output = `
-        const contentTypeParser = require('content-type');
+        const contentTypeParser = require('./content-type.js');
         const _validator = ${serializedValidator};
         try {
           _validator.requestBodyValidators = {
