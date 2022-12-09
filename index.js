@@ -723,7 +723,7 @@ function generateOASValidationCode(oasPath, generatedCodePath) {
       const serializedValidator = serialize(validator, { unsafe: true });
 
       const contentTypeParserCode = fs.readFileSync(
-        "./content-type.js",
+        __dirname + "/content-type.js",
         "utf-8"
       );
       fs.writeFileSync(
