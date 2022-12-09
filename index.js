@@ -712,10 +712,10 @@ function transformOpenAPIV3Definitions(schema) {
 }
 
 function getHeaderValue(requestHeaders, header) {
-  const matchingHeaders = Object.keys(requestHeaders).filter(
+  const matchingHeaders = Object.keys(requestHeaders || {}).filter(
     (key) => key.toLowerCase() === header.toLowerCase()
   );
-  return requestHeaders[matchingHeaders[0]];
+  return (requestHeaders || {})[matchingHeaders[0]];
 }
 
 function generateOASValidationCode(oasPath, generatedCodePath) {

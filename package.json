@@ -1,9 +1,11 @@
 {
   "name": "openapi-request-validator-generator",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Generate code to validate request properties against an OpenAPI spec.",
   "main": "./index",
-  "scripts": {},
+  "scripts": {
+    "test": "jest"
+  },
   "repository": "https://github.com/TheManSpeaker/openapi-request-validator-generator",
   "keywords": [
     "openapi",
@@ -25,5 +27,8 @@
     "openapi-jsonschema-parameters": "12.0.2",
     "serialize-javascript": "6.0.0",
     "ts-log": "2.2.5"
+  },
+  "devDependencies": {
+    "jest": "29.3.1"
   }
 }
