@@ -1,36 +1,29 @@
 {
-  "name": "openapi-request-validator",
-  "version": "12.0.2",
-  "description": "Validate request properties against an OpenAPI spec.",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "files": [
-    "dist/**/*"
-  ],
-  "scripts": {
-    "cover": "../../bin/nyc",
-    "prepare": "../../bin/tsc",
-    "test-watch": "../../bin/tsc && ../../bin/mocha --watch-extensions ts -w",
-    "test": "../../bin/mocha"
-  },
-  "repository": "https://github.com/kogosoftwarellc/open-api/tree/master/packages/openapi-request-validator",
+  "name": "openapi-request-validator-generator",
+  "version": "1.0.0",
+  "description": "Generate code to validate request properties against an OpenAPI spec.",
+  "main": "./index",
+  "scripts": {},
+  "repository": "https://github.com/TheManSpeaker/openapi-request-validator-generator",
   "keywords": [
     "openapi",
     "validator",
     "jsonschema"
   ],
-  "author": "Joseph Spencer",
+  "author": "Matt Manspeaker",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/kogosoftwarellc/open-api/issues"
+    "url": "https://github.com/TheManSpeaker/openapi-request-validator-generator/issues"
   },
-  "homepage": "https://github.com/kogosoftwarellc/open-api/tree/master/packages/openapi-request-validator#readme",
+  "homepage": "https://github.com/TheManSpeaker/openapi-request-validator-generator#readme",
   "dependencies": {
-    "ajv": "^8.3.0",
-    "ajv-formats": "^2.1.0",
-    "content-type": "^1.0.4",
-    "openapi-jsonschema-parameters": "^12.0.2",
-    "openapi-types": "^12.0.2",
-    "ts-log": "^2.1.4"
+    "ajv": "8.11.2",
+    "ajv-formats": "2.1.1",
+    "content-type": "1.0.4",
+    "js-yaml": "4.1.0",
+    "json-schema-deref-sync": "0.14.0",
+    "openapi-jsonschema-parameters": "12.0.2",
+    "serialize-javascript": "6.0.0",
+    "ts-log": "2.2.5"
   }
 }

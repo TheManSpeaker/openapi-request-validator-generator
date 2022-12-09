@@ -1,20 +1,8 @@
-# openapi-request-validator [![NPM version][npm-image]][npm-url] [![Downloads][downloads-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Coveralls Status][coveralls-image]][coveralls-url] [![Gitter chat][gitter-image]][gitter-url]
-> Validate request properties against an OpenAPI spec.
+# openapi-request-validator-generator
 
-## Highlights
-
-* Performant.
-* Extensively tested.
-* Small footprint.
-* Does not validate parameter input.  Converts parameter input to jsonschema using [openapi-jsonschema-parameters](https://github.com/kogosoftwarellc/open-api/tree/master/packages/openapi-jsonschema-parameters).
-* Leverages [jsonschema](https://www.npmjs.com/package/jsonschema).
-* Supports `$ref` in body schemas i.e. `#/definitions/SomeType`.
-* Does not supply default values (use [openapi-default-setter](https://github.com/kogosoftwarellc/open-api/tree/master/packages/openapi-default-setter)).
-* Does not handle type coercion (use [openapi-request-coercer](https://github.com/kogosoftwarellc/open-api/tree/master/packages/openapi-request-coercer)).
+> Generate code to validate request properties against an OpenAPI spec.
 
 ## Example
-
-See `./test/data-driven/*.js` for more examples.
 
 ```javascript
 var OpenAPIRequestValidator = require('openapi-request-validator').default;
