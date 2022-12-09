@@ -734,7 +734,11 @@ function generateOASValidationCode(oasPath, generatedCodePath) {
       )}_${method}.js`;
 
       const endpoint = oas.paths[resource][method];
-      const validator = new OpenAPIRequestValidator(endpoint, dir, fileName);
+      const validator = new OpenAPIRequestValidator(
+        endpoint,
+        dir,
+        fileName.replace(".js", "")
+      );
 
       const serializedValidator = serialize(validator, { unsafe: true });
 
