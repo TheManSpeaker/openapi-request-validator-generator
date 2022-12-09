@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "module": "CommonJS",
+    "outDir": "dist",
+    "sourceMap": true
+  },
+  "files": [
+    "index.ts"
+  ],
+  "references": [{
+    "path": "../openapi-types/tsconfig.json"
+  }, {
+    "path": "../openapi-jsonschema-parameters/tsconfig.json"
+  }]
+}
