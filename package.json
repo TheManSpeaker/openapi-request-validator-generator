@@ -1,6 +1,6 @@
 {
   "name": "openapi-request-validator-generator",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Generate code to validate request properties against an OpenAPI spec.",
   "main": "./index",
   "scripts": {
